@@ -1,0 +1,7 @@
+api_version: 2 # Ensure the version matches your InfluxDB instance.
+ssl: false # Can omit this if using https.
+host: device-influxdb-1
+port: 8086
+token: 6tB2RM1RC_pSRkoS83seQssLz4sFTkwuzaNZLihm-FDcMpy8Y-ZKBI5SmEWGjBgg68Wb7QqkRJZ4PUCJTReA-g== # Your api token
+organization: iot # The InfluxDB organisation that the bucket will belong to.
+bucket: home_assistant # The name of the bucket where the data will be saved

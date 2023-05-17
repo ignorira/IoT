@@ -1,0 +1,61 @@
+version: '3.3'
+#docker run -d --name homeassistant --privileged --restart=unless-stopped -e TZ=America/Los_Angeles -v ./config:/config -p 8123:8123 ghcr.io/home-assistant/home-assistant:stable
+services:
+
+    homeassistant:
+        container_name: homeassistant
+        image: ghcr.io/home-assistant/home-assistant:stable
+        depends_on:
+            - mosquitto
+            - influxdb
+        volumes:
+            - ./config:/config
+            - /etc/localtime:/etc/localtime:ro
+        ports:
+            - "8123:8123"
+        restart: always
+        networks:
+            - mosquitto
+
+    influxdb:
+        image: influxdb:2.0.7
+        environment:
+            DOCKER_INFLUXDB_INIT_MODE: setup
+            DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USERNAME}
+            DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD}
+            DOCKER_INFLUXDB_INIT_ORG: ${INFLUXDB_ORG}
+            DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_BUCKET}
+            DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
+        ports:
+            - "8086:8086"
+        networks:
+            - mosquitto
+
+    grafana:
+        image: grafana/grafana-enterprise:8.2.0
+        restart: unless-stopped
+        depends_on:
+            - influxdb
+        volumes:
+            - ./grafana:/var/lib/grafana
+            - ./grafana/provisioning/:/etc/grafana/provisioning/
+      
+        ports:
+            - "3000:3000"
+        networks:
+            - mosquitto
+
+    mosquitto:
+        image: eclipse-mosquitto:2
+        ports:
+            - "1883:1883"
+        volumes:
+            - C:\Users\79819\mosqtest\config:/mosquitto/config
+            - C:\Users\79819\mosqtest\data:/mosquitto/data
+            - C:\Users\79819\mosqtest\log:/mosquitto/log
+        networks:
+            - mosquitto
+networks:
+    mosquitto:
+        name: mosquitto
+        driver: bridge

@@ -1,0 +1,25 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+# influxdb: !include influxdb.yaml
+influxdb:
+  api_version: 2 # Ensure the version matches your InfluxDB instance.
+  ssl: false # Can omit this if using https.
+  host: device-influxdb-1
+  port: 8086
+  token: 6tB2RM1RC_pSRkoS83seQssLz4sFTkwuzaNZLihm-FDcMpy8Y-ZKBI5SmEWGjBgg68Wb7QqkRJZ4PUCJTReA-g== # Your api token
+  organization: iot # The InfluxDB organisation that the bucket will belong to.
+  bucket: temperature # The name of the bucket where the data will be saved
